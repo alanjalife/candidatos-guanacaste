@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>WICOM - Candidatos a Guanacaste - Distancias, Roles y Honorarios</title>
+<title>WICOM Candidatos a Guanacaste - Distancias, Roles y Honorarios</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
@@ -85,9 +85,13 @@
     border-radius:999px;
     font-size:11.5px;
     font-weight:600;
+    white-space:nowrap;
   }
   .tier1{background:rgba(97,199,143,.15); color:var(--accent3);}
   .tier2{background:rgba(91,141,239,.15); color:var(--accent1);}
+  .tier3{background:rgba(185,139,224,.15); color:#b98be0;}
+  .tier4{background:rgba(246,166,35,.15); color:#f6a623;}
+  .tier5{background:rgba(239,100,97,.15); color:#ef6461;}
   canvas{max-width:100%;}
   .foot{
     max-width:1180px;
@@ -98,7 +102,7 @@
   }
   .full{grid-column:1/-1;}
   #map{
-    height:460px;
+    height:520px;
     width:100%;
     border-radius:10px;
     border:1px solid var(--border);
@@ -115,8 +119,8 @@
     color:#e8ecf4;
     border:1px solid var(--border);
     border-radius:6px;
-    padding:2px 7px;
-    font-size:11.5px;
+    padding:1px 6px;
+    font-size:10.5px;
     font-weight:600;
     white-space:nowrap;
     box-shadow:0 2px 6px rgba(0,0,0,.4);
@@ -137,12 +141,12 @@
 
   <div class="card">
     <h2>Distancia a Guanacaste (km)</h2>
-    <canvas id="distChart" height="230"></canvas>
+    <canvas id="distChart" height="440"></canvas>
   </div>
 
   <div class="card">
     <h2>Honorarios pretendidos (CRC)</h2>
-    <canvas id="feeChart" height="230"></canvas>
+    <canvas id="feeChart" height="440"></canvas>
   </div>
 
   <div class="card full">
@@ -164,50 +168,51 @@
 </div>
 
 <p class="foot">
-  Distancias calculadas en línea recta (fórmula de Haversine) desde cada ubicación hasta Liberia, Guanacaste (cabecera de la provincia). No representan distancia real por carretera. Coordenadas de referencia: Siquirres (10.098, -83.510), La Unión de Montes de Oro, Puntarenas (10.209, -84.714), San José (9.928, -84.091), Liberia, Guanacaste (10.634, -85.438).
+  Distancias en línea recta (fórmula de Haversine) desde cada ubicación hasta Liberia, Guanacaste (cabecera de la provincia); no representan distancia real por carretera. Coordenadas de "Alajuela, Desamparados" y "San Juan, San José" son aproximadas por ambigüedad del nombre de la localidad — avisame si corresponden a otro punto.
 </p>
 
 <script>
 const center = { nombre: "Guanacaste (Liberia)", lat: 10.6335, lng: -85.4380 };
 
 const data = [
-  {
-    nombre: "Brandon Chavarría López",
-    rol: "Wicom - Costa Rica - Tier 3 / 4",
-    ubicacion: "Siquirres, Costa Rica",
-    lat: 10.0981, lng: -83.5097,
-    distancia: 219.2,
-    honorario: 1100000
-  },
-  {
-    nombre: "Luis Enrique Guzmán Gómez",
-    rol: "Wicom - Costa Rica - Tier 1 / 2",
-    ubicacion: "La Unión, Puntarenas, Costa Rica",
-    lat: 10.2091, lng: -84.7141,
-    distancia: 92.2,
-    honorario: 500000
-  },
-  {
-    nombre: "Jose Pablo Morales Lopez",
-    rol: "Wicom - Costa Rica - Tier 3 / 4",
-    ubicacion: "San José, Costa Rica",
-    lat: 9.9281, lng: -84.0907,
-    distancia: 167.0,
-    honorario: 900000
-  }
+  { nombre: "Yerlan Daniel Gomez Hernandez", rol: "Wicom - Costa Rica - Tier 1 / 2", ubicacion: "Nicoya, Guanacaste, Costa Rica", lat: 10.1483, lng: -85.4519, distancia: 80.2, honorario: 600000 },
+  { nombre: "Luis Enrique Guzmán Gómez", rol: "Wicom - Costa Rica - Tier 1 / 2", ubicacion: "La Unión, Puntarenas, Costa Rica", lat: 10.2091, lng: -84.7141, distancia: 92.2, honorario: 500000 },
+  { nombre: "Levy Centeno Castellon", rol: "Wicom - Costa Rica - Tier 1 / 2", ubicacion: "Alajuela, Desamparados, Costa Rica", lat: 10.0159, lng: -84.2116, distancia: 243.0, honorario: 560000 },
+  { nombre: "Johan Aguilar Brenes", rol: "Wicom - Costa Rica - Tier 1 / 2", ubicacion: "Alajuela, Desamparados, Costa Rica", lat: 10.0130, lng: -84.2080, distancia: 243.0, honorario: 560000 },
+  { nombre: "Johykar Williams Scott", rol: "Wicom - Costa Rica - Tier 1 / 2", ubicacion: "San Juan, San José, Costa Rica", lat: 9.9686, lng: -84.0980, distancia: 254.0, honorario: 530000 },
+  { nombre: "Jose Pablo Morales Lopez", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "San José, Costa Rica", lat: 9.9281, lng: -84.0907, distancia: 167.0, honorario: 900000 },
+  { nombre: "Brandon Chavarría López", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "Siquirres, Costa Rica", lat: 10.0981, lng: -83.5097, distancia: 219.2, honorario: 1100000 },
+  { nombre: "Randall Alberto Murillo Zamora", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "Cartago, Costa Rica", lat: 9.8644, lng: -83.9194, distancia: 270.0, honorario: 750000 },
+  { nombre: "Lester Sanchez Flores", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "Alajuela, Costa Rica", lat: 10.0159, lng: -84.2116, distancia: 243.0, honorario: 1200000 },
+  { nombre: "Jose Corrales Mora", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "Curridabat, Costa Rica", lat: 9.9159, lng: -84.0333, distancia: 259.0, honorario: 900000 },
+  { nombre: "Geiner Picado Cerdas", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "Cartago, Costa Rica", lat: 9.8610, lng: -83.9230, distancia: 270.0, honorario: 650000 },
+  { nombre: "Jorge Rolando Barquero Gutierrez", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "Cartago, Costa Rica", lat: 9.8680, lng: -83.9150, distancia: 270.0, honorario: 950000 },
+  { nombre: "Nervin Rivas Jerez", rol: "Wicom - Costa Rica - Jefe de Obra", ubicacion: "Guácima, Alajuela, Costa Rica", lat: 10.0072, lng: -84.2734, distancia: 232.0, honorario: 1587812 },
+  { nombre: "Gustavo Alonso Umaña Zúñiga", rol: "Wicom - Costa Rica - Albañil", ubicacion: "Cartago, Costa Rica", lat: 9.8600, lng: -83.9250, distancia: 228.0, honorario: 650000 },
+  { nombre: "Francisco Gomez Calderon", rol: "Wicom - Costa Rica - Albañil", ubicacion: "Santa Cruz, Guanacaste, Costa Rica", lat: 10.2605, lng: -85.5851, distancia: 48.0, honorario: 650000 },
+  { nombre: "Jordy Antonio Gonzalez Martinez", rol: "Wicom - Costa Rica - Peon de Obra", ubicacion: "Sardinal de Carrillo, Guanacaste, Costa Rica", lat: 10.5174, lng: -85.6475, distancia: 36.0, honorario: 400000 },
+  { nombre: "Jefry Antonio Palma Guevara", rol: "Wicom - Costa Rica - Peon de Obra", ubicacion: "Peñas Blancas, Guanacaste, Costa Rica", lat: 11.2167, lng: -85.6167, distancia: 119.0, honorario: 400000 },
+  { nombre: "Cesar Lozano", rol: "Wicom - Costa Rica - Peon de Obra", ubicacion: "Liberia, Guanacaste, Costa Rica", lat: 10.6300, lng: -85.4400, distancia: 44.0, honorario: 400000 }
 ];
 
-const colors = ["#5b8def", "#61c78f", "#f2b84b"];
+const colors = ["#5b8def","#61c78f","#f2b84b","#ef6461","#b98be0","#4fd1c5","#f2789f","#f6a623","#7cd992","#8ea6ff","#e0c341","#ff8a5c","#74c8e8","#c792ea","#82e0aa","#f1948a","#85c1e9","#f8c471"];
 const fmtCRC = n => "₡" + n.toLocaleString("es-CR");
+
+function tierClass(rol){
+  if (rol.includes("1 / 2")) return "tier1";
+  if (rol.includes("3 / 4")) return "tier2";
+  if (rol.includes("Jefe de Obra")) return "tier3";
+  if (rol.includes("Albañil")) return "tier4";
+  return "tier5";
+}
 
 // Table
 const tbody = document.getElementById("tableBody");
-data.forEach((d, i) => {
-  const tierClass = d.rol.includes("1 / 2") ? "tier1" : "tier2";
+data.forEach((d) => {
   tbody.innerHTML += `
     <tr>
       <td>${d.nombre}</td>
-      <td><span class="tier ${tierClass}">${d.rol}</span></td>
+      <td><span class="tier ${tierClass(d.rol)}">${d.rol}</span></td>
       <td>${d.ubicacion}</td>
       <td class="num">${d.distancia.toLocaleString("es-CR")}</td>
       <td class="num">${fmtCRC(d.honorario)}</td>
@@ -225,7 +230,6 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
   maxZoom: 19
 }).addTo(map);
 
-// Marcador central: Guanacaste
 L.circleMarker([center.lat, center.lng], {
   radius: 10,
   color: '#f2b84b',
@@ -238,25 +242,23 @@ const bounds = [[center.lat, center.lng]];
 
 data.forEach((d, i) => {
   bounds.push([d.lat, d.lng]);
+  const col = colors[i % colors.length];
 
-  // Línea desde el centro hasta la ciudad del candidato
   L.polyline([[center.lat, center.lng], [d.lat, d.lng]], {
-    color: colors[i],
+    color: col,
     weight: 2,
     dashArray: '6 6',
-    opacity: 0.8
+    opacity: 0.7
   }).addTo(map);
 
-  // Marcador de la ciudad del candidato
   L.circleMarker([d.lat, d.lng], {
-    radius: 8,
-    color: colors[i],
+    radius: 6,
+    color: col,
     weight: 2,
-    fillColor: colors[i],
+    fillColor: col,
     fillOpacity: 0.9
   }).addTo(map).bindPopup(`<b>${d.nombre}</b><br>${d.rol}<br>${d.ubicacion}<br>${d.distancia} km &middot; ${fmtCRC(d.honorario)}`);
 
-  // Etiqueta de distancia en el punto medio de la línea
   const midLat = (center.lat + d.lat) / 2;
   const midLng = (center.lng + d.lng) / 2;
   L.marker([midLat, midLng], {
@@ -279,14 +281,15 @@ new Chart(document.getElementById("distChart"), {
       label: "Distancia (km)",
       data: data.map(d => d.distancia),
       backgroundColor: colors,
-      borderRadius: 6
+      borderRadius: 5
     }]
   },
   options: {
+    indexAxis: 'y',
     plugins: { legend: { display: false } },
     scales: {
-      x: { ticks: { color: "#9aa5b8" }, grid: { display: false } },
-      y: { ticks: { color: "#9aa5b8" }, grid: { color: "#2a3348" }, title: { display: true, text: "km", color: "#9aa5b8" } }
+      x: { ticks: { color: "#9aa5b8" }, grid: { color: "#2a3348" }, title: { display: true, text: "km", color: "#9aa5b8" } },
+      y: { ticks: { color: "#9aa5b8", font: { size: 10 } }, grid: { display: false } }
     }
   }
 });
@@ -299,18 +302,18 @@ new Chart(document.getElementById("feeChart"), {
       label: "Honorario (CRC)",
       data: data.map(d => d.honorario),
       backgroundColor: colors,
-      borderRadius: 6
+      borderRadius: 5
     }]
   },
   options: {
+    indexAxis: 'y',
     plugins: { legend: { display: false } },
     scales: {
-      x: { ticks: { color: "#9aa5b8" }, grid: { display: false } },
-      y: { ticks: { color: "#9aa5b8", callback: v => "₡" + (v/1000) + "k" }, grid: { color: "#2a3348" } }
+      x: { ticks: { color: "#9aa5b8", callback: v => "₡" + (v/1000) + "k" }, grid: { color: "#2a3348" } },
+      y: { ticks: { color: "#9aa5b8", font: { size: 10 } }, grid: { display: false } }
     }
   }
 });
-
 </script>
 
 </body>
