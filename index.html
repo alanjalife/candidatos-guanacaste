@@ -142,20 +142,6 @@
   .leaflet-tooltip.center-tooltip::before{
     border-top-color:#ffffff;
   }
-  .city-label{
-    background:transparent;
-    border:none;
-    box-shadow:none;
-    color:#ffffff;
-    font-weight:600;
-    font-size:11px;
-    white-space:nowrap;
-    text-shadow:0 1px 2px rgba(0,0,0,.95), 0 0 5px rgba(0,0,0,.8);
-    padding:0;
-  }
-  .leaflet-tooltip.city-label::before{
-    display:none;
-  }
 </style>
 </head>
 <body>
@@ -196,10 +182,24 @@
     </table>
   </div>
 
+  <div class="card full">
+    <h2>Promedio por rol</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Rol</th>
+          <th class="num">Distancia promedio (km)</th>
+          <th class="num">Honorario promedio (CRC)</th>
+        </tr>
+      </thead>
+      <tbody id="summaryBody"></tbody>
+    </table>
+  </div>
+
 </div>
 
 <p class="foot">
-  Distancias en línea recta (fórmula de Haversine) desde cada ubicación hasta Liberia, Guanacaste (cabecera de la provincia); no representan distancia real por carretera. Coordenadas de "Alajuela, Desamparados" y "San Juan, San José" son aproximadas por ambigüedad del nombre de la localidad — avisame si corresponden a otro punto. Pase el cursor sobre un punto del mapa para ver la distancia.
+  Distancias en línea recta (fórmula de Haversine) desde cada ubicación hasta Liberia, Guanacaste (cabecera de la provincia); no representan distancia real por carretera. Coordenadas de "Alajuela, Desamparados" y "San Juan, San José" son aproximadas por ambigüedad del nombre de la localidad — avisame si corresponden a otro punto. Pase el cursor sobre un punto del mapa para ver ciudad y distancia.
 </p>
 
 <script>
@@ -228,7 +228,7 @@ const data = [
 
 const colors = ["#5b8def","#61c78f","#f2b84b","#ef6461","#b98be0","#4fd1c5","#f2789f","#f6a623","#7cd992","#8ea6ff","#e0c341","#ff8a5c","#74c8e8","#c792ea","#82e0aa","#f1948a","#85c1e9","#f8c471"];
 data.forEach((d, i) => { d.color = colors[i % colors.length]; });
-const fmtCRC = n => "₡" + n.toLocaleString("es-CR");
+const fmtCRC = n => "₡" + Math.round(n).toLocaleString("es-CR");
 
 function tierClass(rol){
   if (rol.includes("1 / 2")) return "tier1";
@@ -238,7 +238,11 @@ function tierClass(rol){
   return "tier5";
 }
 
-// Table
+function roleLabel(rol){
+  return rol.replace("Wicom - Costa Rica - ", "");
+}
+
+// Tabla detalle
 const tbody = document.getElementById("tableBody");
 data.forEach((d) => {
   tbody.innerHTML += `
@@ -248,6 +252,29 @@ data.forEach((d) => {
       <td>${d.ubicacion}</td>
       <td class="num">${d.distancia.toLocaleString("es-CR")}</td>
       <td class="num">${fmtCRC(d.honorario)}</td>
+    </tr>`;
+});
+
+// Tabla de promedios por rol
+const groups = {};
+data.forEach((d) => {
+  const key = roleLabel(d.rol);
+  if (!groups[key]) groups[key] = { rol: d.rol, distSum: 0, feeSum: 0, count: 0 };
+  groups[key].distSum += d.distancia;
+  groups[key].feeSum += d.honorario;
+  groups[key].count += 1;
+});
+
+const summaryBody = document.getElementById("summaryBody");
+Object.keys(groups).forEach((key) => {
+  const g = groups[key];
+  const avgDist = g.distSum / g.count;
+  const avgFee = g.feeSum / g.count;
+  summaryBody.innerHTML += `
+    <tr>
+      <td><span class="tier ${tierClass(g.rol)}">${key}</span></td>
+      <td class="num">${avgDist.toLocaleString("es-CR", { maximumFractionDigits: 1 })}</td>
+      <td class="num">${fmtCRC(avgFee)}</td>
     </tr>`;
 });
 
@@ -294,7 +321,7 @@ data.forEach((d, i) => {
     fillOpacity: 0.9
   }).addTo(map);
 
-  // Ciudad + distancia al pasar el cursor sobre el punto (evita solape de etiquetas fijas)
+  // Ciudad + distancia al pasar el cursor sobre el punto
   marker.bindTooltip(`${ciudad} &middot; ${d.distancia} km`, {
     direction: 'top',
     offset: [0, -6],
