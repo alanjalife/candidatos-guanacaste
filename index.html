@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>WICOM Candidatos a Guanacaste - Distancias, Roles y Honorarios</title>
+<title>WICOM - Candidatos a Guanacaste - Distancias, Roles y Honorarios</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
@@ -114,16 +114,33 @@
   }
   .leaflet-popup-tip{background:#171e2e;}
   .leaflet-popup-content b{color:#fff;}
-  .dist-label{
+  .dist-tooltip{
     background:#0f1420;
     color:#e8ecf4;
     border:1px solid var(--border);
     border-radius:6px;
-    padding:1px 6px;
-    font-size:10.5px;
+    padding:3px 8px;
+    font-size:11.5px;
     font-weight:600;
     white-space:nowrap;
     box-shadow:0 2px 6px rgba(0,0,0,.4);
+  }
+  .leaflet-tooltip.dist-tooltip::before{
+    border-top-color:#0f1420;
+  }
+  .center-tooltip{
+    background:#ffffff;
+    color:#0f1420;
+    border:1px solid #ffffff;
+    border-radius:6px;
+    padding:3px 9px;
+    font-size:12px;
+    font-weight:700;
+    white-space:nowrap;
+    box-shadow:0 2px 8px rgba(0,0,0,.5);
+  }
+  .leaflet-tooltip.center-tooltip::before{
+    border-top-color:#ffffff;
   }
 </style>
 </head>
@@ -168,7 +185,7 @@
 </div>
 
 <p class="foot">
-  Distancias en línea recta (fórmula de Haversine) desde cada ubicación hasta Liberia, Guanacaste (cabecera de la provincia); no representan distancia real por carretera. Coordenadas de "Alajuela, Desamparados" y "San Juan, San José" son aproximadas por ambigüedad del nombre de la localidad — avisame si corresponden a otro punto.
+  Distancias en línea recta (fórmula de Haversine) desde cada ubicación hasta Liberia, Guanacaste (cabecera de la provincia); no representan distancia real por carretera. Coordenadas de "Alajuela, Desamparados" y "San Juan, San José" son aproximadas por ambigüedad del nombre de la localidad — avisame si corresponden a otro punto. Pase el cursor sobre un punto del mapa para ver la distancia.
 </p>
 
 <script>
@@ -196,6 +213,7 @@ const data = [
 ];
 
 const colors = ["#5b8def","#61c78f","#f2b84b","#ef6461","#b98be0","#4fd1c5","#f2789f","#f6a623","#7cd992","#8ea6ff","#e0c341","#ff8a5c","#74c8e8","#c792ea","#82e0aa","#f1948a","#85c1e9","#f8c471"];
+data.forEach((d, i) => { d.color = colors[i % colors.length]; });
 const fmtCRC = n => "₡" + n.toLocaleString("es-CR");
 
 function tierClass(rol){
@@ -230,13 +248,23 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
   maxZoom: 19
 }).addTo(map);
 
-L.circleMarker([center.lat, center.lng], {
-  radius: 10,
-  color: '#f2b84b',
-  weight: 3,
-  fillColor: '#f2b84b',
-  fillOpacity: 0.9
-}).addTo(map).bindPopup(`<b>${center.nombre}</b><br>Punto de referencia`);
+// Marcador central: Guanacaste (punto blanco, siempre visible con etiqueta)
+const centerMarker = L.circleMarker([center.lat, center.lng], {
+  radius: 9,
+  color: '#0f1420',
+  weight: 2,
+  fillColor: '#ffffff',
+  fillOpacity: 1
+}).addTo(map);
+
+centerMarker.bindTooltip('Guanacaste', {
+  permanent: true,
+  direction: 'top',
+  offset: [0, -8],
+  className: 'center-tooltip'
+});
+
+centerMarker.bindPopup(`<b>${center.nombre}</b><br>Punto de referencia`);
 
 const bounds = [[center.lat, center.lng]];
 
@@ -244,43 +272,38 @@ data.forEach((d, i) => {
   bounds.push([d.lat, d.lng]);
   const col = colors[i % colors.length];
 
-  L.polyline([[center.lat, center.lng], [d.lat, d.lng]], {
-    color: col,
-    weight: 2,
-    dashArray: '6 6',
-    opacity: 0.7
-  }).addTo(map);
-
-  L.circleMarker([d.lat, d.lng], {
-    radius: 6,
+  const marker = L.circleMarker([d.lat, d.lng], {
+    radius: 5,
     color: col,
     weight: 2,
     fillColor: col,
     fillOpacity: 0.9
-  }).addTo(map).bindPopup(`<b>${d.nombre}</b><br>${d.rol}<br>${d.ubicacion}<br>${d.distancia} km &middot; ${fmtCRC(d.honorario)}`);
-
-  const midLat = (center.lat + d.lat) / 2;
-  const midLng = (center.lng + d.lng) / 2;
-  L.marker([midLat, midLng], {
-    icon: L.divIcon({
-      className: '',
-      html: `<div class="dist-label">${d.distancia} km</div>`,
-      iconSize: null
-    }),
-    interactive: false
   }).addTo(map);
+
+  marker.bindTooltip(`${d.distancia} km`, {
+    direction: 'top',
+    offset: [0, -6],
+    className: 'dist-tooltip'
+  });
+
+  marker.bindPopup(`<b>${d.nombre}</b><br>${d.rol}<br>${d.ubicacion}<br>${d.distancia} km &middot; ${fmtCRC(d.honorario)}`);
 });
 
 map.fitBounds(bounds, { padding: [40, 40] });
 
+const distSorted = [...data].sort((a, b) => a.distancia - b.distancia);
+const feeSorted = [...data].sort((a, b) => a.honorario - b.honorario);
+const distLabels = distSorted.map(d => d.nombre.split(" ").slice(0,2).join(" "));
+const feeLabels = feeSorted.map(d => d.nombre.split(" ").slice(0,2).join(" "));
+
 new Chart(document.getElementById("distChart"), {
   type: "bar",
   data: {
-    labels,
+    labels: distLabels,
     datasets: [{
       label: "Distancia (km)",
-      data: data.map(d => d.distancia),
-      backgroundColor: colors,
+      data: distSorted.map(d => d.distancia),
+      backgroundColor: distSorted.map(d => d.color),
       borderRadius: 5
     }]
   },
@@ -297,11 +320,11 @@ new Chart(document.getElementById("distChart"), {
 new Chart(document.getElementById("feeChart"), {
   type: "bar",
   data: {
-    labels,
+    labels: feeLabels,
     datasets: [{
       label: "Honorario (CRC)",
-      data: data.map(d => d.honorario),
-      backgroundColor: colors,
+      data: feeSorted.map(d => d.honorario),
+      backgroundColor: feeSorted.map(d => d.color),
       borderRadius: 5
     }]
   },
