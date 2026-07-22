@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>WICOM - Candidatos a Guanacaste - Distancias, Roles y Honorarios</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+  :root{
+    --bg:#0f1420;
+    --card:#171e2e;
+    --border:#2a3348;
+    --text:#e8ecf4;
+    --muted:#9aa5b8;
+    --accent1:#5b8def;
+    --accent2:#f2b84b;
+    --accent3:#61c78f;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;
+    background:linear-gradient(180deg,#0f1420,#12192a);
+    color:var(--text);
+    padding:32px 24px 60px;
+  }
+  h1{
+    font-size:24px;
+    margin:0 0 4px;
+  }
+  p.subtitle{
+    color:var(--muted);
+    margin:0 0 28px;
+    font-size:14px;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns:1.3fr 1fr;
+    gap:20px;
+    max-width:1180px;
+    margin:0 auto;
+  }
+  @media (max-width:900px){
+    .grid{grid-template-columns:1fr;}
+  }
+  .card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:20px 22px;
+  }
+  .card h2{
+    font-size:15px;
+    margin:0 0 16px;
+    color:var(--muted);
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+  }
+  table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:13.5px;
+  }
+  th,td{
+    text-align:left;
+    padding:9px 8px;
+    border-bottom:1px solid var(--border);
+  }
+  th{
+    color:var(--muted);
+    font-weight:600;
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:.03em;
+  }
+  td.num{
+    text-align:right;
+    font-variant-numeric:tabular-nums;
+  }
+  .tier{
+    display:inline-block;
+    padding:2px 8px;
+    border-radius:999px;
+    font-size:11.5px;
+    font-weight:600;
+  }
+  .tier1{background:rgba(97,199,143,.15); color:var(--accent3);}
+  .tier2{background:rgba(91,141,239,.15); color:var(--accent1);}
+  canvas{max-width:100%;}
+  .foot{
+    max-width:1180px;
+    margin:24px auto 0;
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.6;
+  }
+  .full{grid-column:1/-1;}
+  #map{
+    height:460px;
+    width:100%;
+    border-radius:10px;
+    border:1px solid var(--border);
+  }
+  .leaflet-popup-content-wrapper{
+    background:#171e2e;
+    color:#e8ecf4;
+    border-radius:8px;
+  }
+  .leaflet-popup-tip{background:#171e2e;}
+  .leaflet-popup-content b{color:#fff;}
+  .dist-label{
+    background:#0f1420;
+    color:#e8ecf4;
+    border:1px solid var(--border);
+    border-radius:6px;
+    padding:2px 7px;
+    font-size:11.5px;
+    font-weight:600;
+    white-space:nowrap;
+    box-shadow:0 2px 6px rgba(0,0,0,.4);
+  }
+</style>
+</head>
+<body>
+
+<h1>WICOM - Candidatos a Guanacaste</h1>
+<p class="subtitle">Distancia, rol al que aplican y honorarios pretendidos &middot; punto de referencia: Liberia, Guanacaste, Costa Rica</p>
+
+<div class="grid">
+
+  <div class="card full">
+    <h2>Mapa: Guanacaste y ciudades de los candidatos</h2>
+    <div id="map"></div>
+  </div>
+
+  <div class="card">
+    <h2>Distancia a Guanacaste (km)</h2>
+    <canvas id="distChart" height="230"></canvas>
+  </div>
+
+  <div class="card">
+    <h2>Honorarios pretendidos (CRC)</h2>
+    <canvas id="feeChart" height="230"></canvas>
+  </div>
+
+  <div class="card full">
+    <h2>Detalle de candidatos</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Candidato</th>
+          <th>Rol / Tier</th>
+          <th>Ubicación</th>
+          <th class="num">Distancia (km)</th>
+          <th class="num">Honorario (CRC)</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<p class="foot">
+  Distancias calculadas en línea recta (fórmula de Haversine) desde cada ubicación hasta Liberia, Guanacaste (cabecera de la provincia). No representan distancia real por carretera. Coordenadas de referencia: Siquirres (10.098, -83.510), La Unión de Montes de Oro, Puntarenas (10.209, -84.714), San José (9.928, -84.091), Liberia, Guanacaste (10.634, -85.438).
+</p>
+
+<script>
+const center = { nombre: "Guanacaste (Liberia)", lat: 10.6335, lng: -85.4380 };
+
+const data = [
+  {
+    nombre: "Brandon Chavarría López",
+    rol: "Wicom - Costa Rica - Tier 3 / 4",
+    ubicacion: "Siquirres, Costa Rica",
+    lat: 10.0981, lng: -83.5097,
+    distancia: 219.2,
+    honorario: 1100000
+  },
+  {
+    nombre: "Luis Enrique Guzmán Gómez",
+    rol: "Wicom - Costa Rica - Tier 1 / 2",
+    ubicacion: "La Unión, Puntarenas, Costa Rica",
+    lat: 10.2091, lng: -84.7141,
+    distancia: 92.2,
+    honorario: 500000
+  },
+  {
+    nombre: "Jose Pablo Morales Lopez",
+    rol: "Wicom - Costa Rica - Tier 3 / 4",
+    ubicacion: "San José, Costa Rica",
+    lat: 9.9281, lng: -84.0907,
+    distancia: 167.0,
+    honorario: 900000
+  }
+];
+
+const colors = ["#5b8def", "#61c78f", "#f2b84b"];
+const fmtCRC = n => "₡" + n.toLocaleString("es-CR");
+
+// Table
+const tbody = document.getElementById("tableBody");
+data.forEach((d, i) => {
+  const tierClass = d.rol.includes("1 / 2") ? "tier1" : "tier2";
+  tbody.innerHTML += `
+    <tr>
+      <td>${d.nombre}</td>
+      <td><span class="tier ${tierClass}">${d.rol}</span></td>
+      <td>${d.ubicacion}</td>
+      <td class="num">${d.distancia.toLocaleString("es-CR")}</td>
+      <td class="num">${fmtCRC(d.honorario)}</td>
+    </tr>`;
+});
+
+const labels = data.map(d => d.nombre.split(" ").slice(0,2).join(" "));
+
+// --- Mapa ---
+const map = L.map('map', { scrollWheelZoom: false }).setView([center.lat, center.lng], 7);
+
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  attribution: '&copy; OpenStreetMap &copy; CARTO',
+  subdomains: 'abcd',
+  maxZoom: 19
+}).addTo(map);
+
+// Marcador central: Guanacaste
+L.circleMarker([center.lat, center.lng], {
+  radius: 10,
+  color: '#f2b84b',
+  weight: 3,
+  fillColor: '#f2b84b',
+  fillOpacity: 0.9
+}).addTo(map).bindPopup(`<b>${center.nombre}</b><br>Punto de referencia`);
+
+const bounds = [[center.lat, center.lng]];
+
+data.forEach((d, i) => {
+  bounds.push([d.lat, d.lng]);
+
+  // Línea desde el centro hasta la ciudad del candidato
+  L.polyline([[center.lat, center.lng], [d.lat, d.lng]], {
+    color: colors[i],
+    weight: 2,
+    dashArray: '6 6',
+    opacity: 0.8
+  }).addTo(map);
+
+  // Marcador de la ciudad del candidato
+  L.circleMarker([d.lat, d.lng], {
+    radius: 8,
+    color: colors[i],
+    weight: 2,
+    fillColor: colors[i],
+    fillOpacity: 0.9
+  }).addTo(map).bindPopup(`<b>${d.nombre}</b><br>${d.rol}<br>${d.ubicacion}<br>${d.distancia} km &middot; ${fmtCRC(d.honorario)}`);
+
+  // Etiqueta de distancia en el punto medio de la línea
+  const midLat = (center.lat + d.lat) / 2;
+  const midLng = (center.lng + d.lng) / 2;
+  L.marker([midLat, midLng], {
+    icon: L.divIcon({
+      className: '',
+      html: `<div class="dist-label">${d.distancia} km</div>`,
+      iconSize: null
+    }),
+    interactive: false
+  }).addTo(map);
+});
+
+map.fitBounds(bounds, { padding: [40, 40] });
+
+new Chart(document.getElementById("distChart"), {
+  type: "bar",
+  data: {
+    labels,
+    datasets: [{
+      label: "Distancia (km)",
+      data: data.map(d => d.distancia),
+      backgroundColor: colors,
+      borderRadius: 6
+    }]
+  },
+  options: {
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { ticks: { color: "#9aa5b8" }, grid: { display: false } },
+      y: { ticks: { color: "#9aa5b8" }, grid: { color: "#2a3348" }, title: { display: true, text: "km", color: "#9aa5b8" } }
+    }
+  }
+});
+
+new Chart(document.getElementById("feeChart"), {
+  type: "bar",
+  data: {
+    labels,
+    datasets: [{
+      label: "Honorario (CRC)",
+      data: data.map(d => d.honorario),
+      backgroundColor: colors,
+      borderRadius: 6
+    }]
+  },
+  options: {
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { ticks: { color: "#9aa5b8" }, grid: { display: false } },
+      y: { ticks: { color: "#9aa5b8", callback: v => "₡" + (v/1000) + "k" }, grid: { color: "#2a3348" } }
+    }
+  }
+});
+
+</script>
+
+</body>
+</html>
