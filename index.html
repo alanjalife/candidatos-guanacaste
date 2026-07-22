@@ -96,6 +96,14 @@
   .tier3{background:rgba(185,139,224,.15); color:#b98be0;}
   .tier4{background:rgba(246,166,35,.15); color:#f6a623;}
   .tier5{background:rgba(239,100,97,.15); color:#ef6461;}
+  .cv-link{
+    color:var(--accent1);
+    text-decoration:none;
+    border-bottom:1px dotted var(--accent1);
+  }
+  .cv-link:hover{
+    color:#8fb4f7;
+  }
   canvas{max-width:100%;}
   .foot{
     max-width:1180px;
@@ -118,6 +126,7 @@
   }
   .leaflet-popup-tip{background:#171e2e;}
   .leaflet-popup-content b{color:#fff;}
+  .leaflet-popup-content a{color:#8fb4f7;}
   .dist-tooltip{
     background:#0f1420;
     color:#e8ecf4;
@@ -204,7 +213,7 @@
 </div>
 
 <p class="foot">
-  Distancias en línea recta (fórmula de Haversine) desde cada ubicación hasta Liberia, Guanacaste (cabecera de la provincia); no representan distancia real por carretera. Coordenadas de "Alajuela, Desamparados" y "San Juan, San José" son aproximadas por ambigüedad del nombre de la localidad — avisame si corresponden a otro punto. Pase el cursor sobre un punto del mapa para ver ciudad y distancia.
+  Distancias en línea recta (fórmula de Haversine) desde cada ubicación hasta Liberia, Guanacaste (cabecera de la provincia); no representan distancia real por carretera. Coordenadas de "Alajuela, Desamparados" y "San Juan, San José" son aproximadas por ambigüedad del nombre de la localidad — avisame si corresponden a otro punto. Pase el cursor sobre un punto del mapa para ver ciudad y distancia; haga clic para ver detalles y CV (cuando esté disponible).
 </p>
 
 <script>
@@ -216,8 +225,8 @@ const data = [
   { nombre: "Levy Centeno Castellon", rol: "Wicom - Costa Rica - Tier 1 / 2", ubicacion: "Alajuela, Desamparados, Costa Rica", lat: 10.0159, lng: -84.2116, distancia: 243.0, honorario: 560000 },
   { nombre: "Johan Aguilar Brenes", rol: "Wicom - Costa Rica - Tier 1 / 2", ubicacion: "Alajuela, Desamparados, Costa Rica", lat: 10.0130, lng: -84.2080, distancia: 243.0, honorario: 560000 },
   { nombre: "Johykar Williams Scott", rol: "Wicom - Costa Rica - Tier 1 / 2", ubicacion: "San Juan, San José, Costa Rica", lat: 9.9686, lng: -84.0980, distancia: 254.0, honorario: 530000 },
-  { nombre: "Jose Pablo Morales Lopez", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "San José, Costa Rica", lat: 9.9281, lng: -84.0907, distancia: 167.0, honorario: 900000 },
-  { nombre: "Brandon Chavarría López", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "Siquirres, Costa Rica", lat: 10.0981, lng: -83.5097, distancia: 219.2, honorario: 1100000 },
+  { nombre: "Jose Pablo Morales Lopez", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "San José, Costa Rica", lat: 9.9281, lng: -84.0907, distancia: 167.0, honorario: 900000, cv: "https://drive.google.com/file/d/1XHfzPm167nbfYuRppyXTH2s4GszOGY6L/view?usp=drive_link" },
+  { nombre: "Brandon Chavarría López", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "Siquirres, Costa Rica", lat: 10.0981, lng: -83.5097, distancia: 219.2, honorario: 1100000, cv: "https://drive.google.com/file/d/1vdZnGXkJwMGVchjTaCSRRhAbzxM1wtoJ/view?usp=sharing" },
   { nombre: "Randall Alberto Murillo Zamora", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "Cartago, Costa Rica", lat: 9.8644, lng: -83.9194, distancia: 270.0, honorario: 750000 },
   { nombre: "Lester Sanchez Flores", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "Alajuela, Costa Rica", lat: 10.0159, lng: -84.2116, distancia: 243.0, honorario: 1200000 },
   { nombre: "Jose Corrales Mora", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "Curridabat, Costa Rica", lat: 9.9159, lng: -84.0333, distancia: 259.0, honorario: 900000 },
@@ -247,12 +256,18 @@ function roleLabel(rol){
   return rol.replace("Wicom - Costa Rica - ", "");
 }
 
+function nombreCell(d){
+  return d.cv
+    ? `<a class="cv-link" href="${d.cv}" target="_blank" rel="noopener">${d.nombre}</a>`
+    : d.nombre;
+}
+
 // Tabla detalle
 const tbody = document.getElementById("tableBody");
 data.forEach((d) => {
   tbody.innerHTML += `
     <tr>
-      <td>${d.nombre}</td>
+      <td>${nombreCell(d)}</td>
       <td><span class="tier ${tierClass(d.rol)}">${d.rol}</span></td>
       <td>${d.ubicacion}</td>
       <td class="num">${d.distancia.toLocaleString("es-CR")}</td>
@@ -334,7 +349,8 @@ data.forEach((d, i) => {
     className: 'dist-tooltip'
   });
 
-  marker.bindPopup(`<b>${d.nombre}</b><br>${d.rol}<br>${d.ubicacion}<br>${d.distancia} km &middot; ${fmtCRC(d.honorario)}`);
+  const cvLine = d.cv ? `<br><a href="${d.cv}" target="_blank" rel="noopener">Ver CV</a>` : '';
+  marker.bindPopup(`<b>${d.nombre}</b><br>${d.rol}<br>${d.ubicacion}<br>${d.distancia} km &middot; ${fmtCRC(d.honorario)}${cvLine}`);
 });
 
 map.fitBounds(bounds, { padding: [40, 40] });
