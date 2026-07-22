@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>WICOM - Candidatos a Guanacaste - Distancias, Roles y Honorarios</title>
+<title>Candidatos a Guanacaste - Distancias, Roles y Honorarios</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
@@ -142,11 +142,25 @@
   .leaflet-tooltip.center-tooltip::before{
     border-top-color:#ffffff;
   }
+  .city-label{
+    background:transparent;
+    border:none;
+    box-shadow:none;
+    color:#ffffff;
+    font-weight:600;
+    font-size:11px;
+    white-space:nowrap;
+    text-shadow:0 1px 2px rgba(0,0,0,.95), 0 0 5px rgba(0,0,0,.8);
+    padding:0;
+  }
+  .leaflet-tooltip.city-label::before{
+    display:none;
+  }
 </style>
 </head>
 <body>
 
-<h1>WICOM - Candidatos a Guanacaste</h1>
+<h1>Candidatos a Guanacaste</h1>
 <p class="subtitle">Distancia, rol al que aplican y honorarios pretendidos &middot; punto de referencia: Liberia, Guanacaste, Costa Rica</p>
 
 <div class="grid">
@@ -237,16 +251,15 @@ data.forEach((d) => {
     </tr>`;
 });
 
-const labels = data.map(d => d.nombre.split(" ").slice(0,2).join(" "));
-
 // --- Mapa ---
 const map = L.map('map', { scrollWheelZoom: false }).setView([center.lat, center.lng], 7);
 
-L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+const baseLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
   attribution: '&copy; OpenStreetMap &copy; CARTO',
   subdomains: 'abcd',
   maxZoom: 19
 }).addTo(map);
+baseLayer.getContainer() && (baseLayer.getContainer().style.filter = 'brightness(1.35) contrast(0.9)');
 
 // Marcador central: Guanacaste (punto blanco, siempre visible con etiqueta)
 const centerMarker = L.circleMarker([center.lat, center.lng], {
@@ -270,7 +283,8 @@ const bounds = [[center.lat, center.lng]];
 
 data.forEach((d, i) => {
   bounds.push([d.lat, d.lng]);
-  const col = colors[i % colors.length];
+  const col = d.color;
+  const ciudad = d.ubicacion.split(",")[0].trim();
 
   const marker = L.circleMarker([d.lat, d.lng], {
     radius: 5,
@@ -280,7 +294,8 @@ data.forEach((d, i) => {
     fillOpacity: 0.9
   }).addTo(map);
 
-  marker.bindTooltip(`${d.distancia} km`, {
+  // Ciudad + distancia al pasar el cursor sobre el punto (evita solape de etiquetas fijas)
+  marker.bindTooltip(`${ciudad} &middot; ${d.distancia} km`, {
     direction: 'top',
     offset: [0, -6],
     className: 'dist-tooltip'
