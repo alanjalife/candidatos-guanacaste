@@ -188,6 +188,7 @@
       <thead>
         <tr>
           <th>Rol</th>
+          <th class="num">Candidatos</th>
           <th class="num">Distancia promedio (km)</th>
           <th class="num">Honorario promedio (CRC)</th>
         </tr>
@@ -273,6 +274,7 @@ Object.keys(groups).forEach((key) => {
   summaryBody.innerHTML += `
     <tr>
       <td><span class="tier ${tierClass(g.rol)}">${key}</span></td>
+      <td class="num">${g.count}</td>
       <td class="num">${avgDist.toLocaleString("es-CR", { maximumFractionDigits: 1 })}</td>
       <td class="num">${fmtCRC(avgFee)}</td>
     </tr>`;
