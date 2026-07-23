@@ -114,7 +114,7 @@
   }
   .full{grid-column:1/-1;}
   #map{
-    height:520px;
+    height:560px;
     width:100%;
     border-radius:10px;
     border:1px solid var(--border);
@@ -171,12 +171,12 @@
 
   <div class="card">
     <h2>Distancia a Guanacaste (km)</h2>
-    <canvas id="distChart" height="440"></canvas>
+    <canvas id="distChart" height="520"></canvas>
   </div>
 
   <div class="card">
     <h2>Honorarios pretendidos (CRC)</h2>
-    <canvas id="feeChart" height="440"></canvas>
+    <canvas id="feeChart" height="520"></canvas>
   </div>
 
   <div class="card full">
@@ -213,34 +213,37 @@
 </div>
 
 <p class="foot">
-  Distancias en línea recta (fórmula de Haversine) desde cada ubicación hasta Liberia, Guanacaste (cabecera de la provincia); no representan distancia real por carretera. Coordenadas de "Alajuela, Desamparados" y "San Juan, San José" son aproximadas por ambigüedad del nombre de la localidad — avisame si corresponden a otro punto. Pase el cursor sobre un punto del mapa para ver ciudad y distancia; haga clic para ver detalles y CV (cuando esté disponible).
+  Distancias en línea recta (fórmula de Haversine) desde cada ubicación hasta Liberia, Guanacaste (cabecera de la provincia); no representan distancia real por carretera. Coordenadas de "Alajuela, Desamparados" y "San Juan, San José" son aproximadas por ambigüedad del nombre de la localidad — avisame si corresponden a otro punto. Pase el cursor sobre un punto del mapa para ver ciudad y distancia; haga clic para ver detalles y CV (cuando esté disponible). Los CV se tomaron de la columna "Link al CV" de la planilla de origen.
 </p>
 
 <script>
 const center = { nombre: "Guanacaste (Liberia)", lat: 10.6335, lng: -85.4380 };
 
 const data = [
-  { nombre: "Yerlan Daniel Gomez Hernandez", rol: "Wicom - Costa Rica - Tier 1 / 2", ubicacion: "Nicoya, Guanacaste, Costa Rica", lat: 10.1483, lng: -85.4519, distancia: 80.2, honorario: 600000 },
-  { nombre: "Luis Enrique Guzmán Gómez", rol: "Wicom - Costa Rica - Tier 1 / 2", ubicacion: "La Unión, Puntarenas, Costa Rica", lat: 10.2091, lng: -84.7141, distancia: 92.2, honorario: 500000 },
-  { nombre: "Levy Centeno Castellon", rol: "Wicom - Costa Rica - Tier 1 / 2", ubicacion: "Alajuela, Desamparados, Costa Rica", lat: 10.0159, lng: -84.2116, distancia: 243.0, honorario: 560000 },
-  { nombre: "Johan Aguilar Brenes", rol: "Wicom - Costa Rica - Tier 1 / 2", ubicacion: "Alajuela, Desamparados, Costa Rica", lat: 10.0130, lng: -84.2080, distancia: 243.0, honorario: 560000 },
-  { nombre: "Johykar Williams Scott", rol: "Wicom - Costa Rica - Tier 1 / 2", ubicacion: "San Juan, San José, Costa Rica", lat: 9.9686, lng: -84.0980, distancia: 254.0, honorario: 530000 },
+  { nombre: "Yerlan Daniel Gomez Hernandez", rol: "Wicom - Costa Rica - Tier 1 / 2", ubicacion: "Nicoya, Guanacaste, Costa Rica", lat: 10.1483, lng: -85.4519, distancia: 80.2, honorario: 600000, cv: "https://drive.google.com/file/d/1jO0Xo9-Jx4ZunVBPGpXk0wwScIOh6DNo/view?usp=drive_link" },
+  { nombre: "Luis Enrique Guzmán Gómez", rol: "Wicom - Costa Rica - Tier 1 / 2", ubicacion: "La Unión, Puntarenas, Costa Rica", lat: 10.2091, lng: -84.7141, distancia: 92.2, honorario: 500000, cv: "https://drive.google.com/file/d/1pTM4MNlX55VX3T90h3FhXx7K6CLT8tuO/view?usp=drive_link" },
+  { nombre: "Levy Centeno Castellon", rol: "Wicom - Costa Rica - Tier 1 / 2", ubicacion: "Alajuela, Desamparados, Costa Rica", lat: 10.0159, lng: -84.2116, distancia: 243.0, honorario: 560000, cv: "https://drive.google.com/file/d/1J4OAZVoRyJSdVEZ8UEJBLj3i_v1vODAY/view?usp=drive_link" },
+  { nombre: "Johan Aguilar Brenes", rol: "Wicom - Costa Rica - Tier 1 / 2", ubicacion: "Alajuela, Desamparados, Costa Rica", lat: 10.0130, lng: -84.2080, distancia: 243.0, honorario: 560000, cv: "https://drive.google.com/file/d/19RU9e-vgRqGi1W-wHjDpefy4-xuBcjtC/view?usp=drive_link" },
+  { nombre: "Johykar Williams Scott", rol: "Wicom - Costa Rica - Tier 1 / 2", ubicacion: "San Juan, San José, Costa Rica", lat: 9.9686, lng: -84.0980, distancia: 254.0, honorario: 530000, cv: "https://drive.google.com/file/d/1y93XX236fdaXPyGTbAyKka4l2UO8X7lD/view?usp=drive_link" },
+  { nombre: "Johel Jose González Siles", rol: "Wicom - Costa Rica - Tier 1 / 2", ubicacion: "Mogote, Guanacaste, Costa Rica", lat: 10.7031, lng: -85.2731, distancia: 90.0, honorario: 650000, cv: "https://drive.google.com/file/d/1BRogOUrNhUG-i_woJxZFBdCq-CQssiMF/view?usp=drive_link" },
+  { nombre: "Moisés Rojas Rodríguez", rol: "Wicom - Costa Rica - Tier 1 / 2", ubicacion: "Tilarán, Guanacaste, Costa Rica", lat: 10.4670, lng: -84.9678, distancia: 110.0, honorario: 550000, cv: "https://drive.google.com/file/d/1YWlT5DoxyBFfiBNZRkd3Hh74rUtn09f9/view?usp=drive_link" },
   { nombre: "Jose Pablo Morales Lopez", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "San José, Costa Rica", lat: 9.9281, lng: -84.0907, distancia: 167.0, honorario: 900000, cv: "https://drive.google.com/file/d/1XHfzPm167nbfYuRppyXTH2s4GszOGY6L/view?usp=drive_link" },
   { nombre: "Brandon Chavarría López", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "Siquirres, Costa Rica", lat: 10.0981, lng: -83.5097, distancia: 219.2, honorario: 1100000, cv: "https://drive.google.com/file/d/1vdZnGXkJwMGVchjTaCSRRhAbzxM1wtoJ/view?usp=sharing" },
-  { nombre: "Randall Alberto Murillo Zamora", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "Cartago, Costa Rica", lat: 9.8644, lng: -83.9194, distancia: 270.0, honorario: 750000 },
-  { nombre: "Lester Sanchez Flores", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "Alajuela, Costa Rica", lat: 10.0159, lng: -84.2116, distancia: 243.0, honorario: 1200000 },
-  { nombre: "Jose Corrales Mora", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "Curridabat, Costa Rica", lat: 9.9159, lng: -84.0333, distancia: 259.0, honorario: 900000 },
-  { nombre: "Geiner Picado Cerdas", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "Cartago, Costa Rica", lat: 9.8610, lng: -83.9230, distancia: 270.0, honorario: 650000 },
-  { nombre: "Jorge Rolando Barquero Gutierrez", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "Cartago, Costa Rica", lat: 9.8680, lng: -83.9150, distancia: 270.0, honorario: 950000 },
+  { nombre: "Randall Alberto Murillo Zamora", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "Cartago, Costa Rica", lat: 9.8644, lng: -83.9194, distancia: 270.0, honorario: 750000, cv: "https://drive.google.com/file/d/1SdwM_UpUsJEKUM5DW5Ux1R0PUbBjMxfy/view?usp=drive_link" },
+  { nombre: "Lester Sanchez Flores", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "Alajuela, Costa Rica", lat: 10.0159, lng: -84.2116, distancia: 243.0, honorario: 1200000, cv: "https://drive.google.com/file/d/1h4kIimUqcLUi9Ji4clnMWGRGFhD-FbN7/view?usp=drive_link" },
+  { nombre: "Jose Corrales Mora", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "Curridabat, Costa Rica", lat: 9.9159, lng: -84.0333, distancia: 259.0, honorario: 900000, cv: "https://drive.google.com/file/d/1l1hsP74XLUnvAoBqZ7MSuNFHYHBu-z8h/view?usp=drive_link" },
+  { nombre: "Geiner Picado Cerdas", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "Cartago, Costa Rica", lat: 9.8610, lng: -83.9230, distancia: 270.0, honorario: 650000, cv: "https://drive.google.com/file/d/1RFcRY9Y0Ts_X08dLY0XIYykgppoTcyGA/view?usp=drive_link" },
+  { nombre: "Jorge Rolando Barquero Gutierrez", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "Cartago, Costa Rica", lat: 9.8680, lng: -83.9150, distancia: 270.0, honorario: 950000, cv: "https://drive.google.com/file/d/1WN0IMdaDow2LTDzBQaMI-88Rrigygg9E/view?usp=drive_link" },
+  { nombre: "Gilberth Jiménez Prendas", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "San José, Costa Rica", lat: 9.9320, lng: -84.0850, distancia: 167.0, honorario: 1000000, cv: "https://drive.google.com/file/d/1EJHaTAjGqZV5AZBT3gbH4aAEtovxR5W9/view?usp=drive_link" },
   { nombre: "Nervin Rivas Jerez", rol: "Wicom - Costa Rica - Jefe de Obra", ubicacion: "Guácima, Alajuela, Costa Rica", lat: 10.0072, lng: -84.2734, distancia: 232.0, honorario: 1587812 },
-  { nombre: "Gustavo Alonso Umaña Zúñiga", rol: "Wicom - Costa Rica - Albañil", ubicacion: "Cartago, Costa Rica", lat: 9.8600, lng: -83.9250, distancia: 228.0, honorario: 650000 },
-  { nombre: "Francisco Gomez Calderon", rol: "Wicom - Costa Rica - Albañil", ubicacion: "Santa Cruz, Guanacaste, Costa Rica", lat: 10.2605, lng: -85.5851, distancia: 48.0, honorario: 650000 },
-  { nombre: "Jordy Antonio Gonzalez Martinez", rol: "Wicom - Costa Rica - Peon de Obra", ubicacion: "Sardinal de Carrillo, Guanacaste, Costa Rica", lat: 10.5174, lng: -85.6475, distancia: 36.0, honorario: 400000 },
-  { nombre: "Jefry Antonio Palma Guevara", rol: "Wicom - Costa Rica - Peon de Obra", ubicacion: "Peñas Blancas, Guanacaste, Costa Rica", lat: 11.2167, lng: -85.6167, distancia: 119.0, honorario: 400000 },
-  { nombre: "Cesar Lozano", rol: "Wicom - Costa Rica - Peon de Obra", ubicacion: "Liberia, Guanacaste, Costa Rica", lat: 10.6300, lng: -85.4400, distancia: 44.0, honorario: 400000 }
+  { nombre: "Gustavo Alonso Umaña Zúñiga", rol: "Wicom - Costa Rica - Albañil", ubicacion: "Cartago, Costa Rica", lat: 9.8600, lng: -83.9250, distancia: 228.0, honorario: 650000, cv: "https://drive.google.com/file/d/1NY7qEZ6ex1ujoxQKlv99TrHvl_XP-aKK/view?usp=sharing" },
+  { nombre: "Francisco Gomez Calderon", rol: "Wicom - Costa Rica - Albañil", ubicacion: "Santa Cruz, Guanacaste, Costa Rica", lat: 10.2605, lng: -85.5851, distancia: 48.0, honorario: 650000, cv: "https://drive.google.com/file/d/1f6nG5_3d_2It2dhDnIb43Ed-JC9V3nju/view?usp=drive_link" },
+  { nombre: "Jordy Antonio Gonzalez Martinez", rol: "Wicom - Costa Rica - Peon de Obra", ubicacion: "Sardinal de Carrillo, Guanacaste, Costa Rica", lat: 10.5174, lng: -85.6475, distancia: 36.0, honorario: 400000, cv: "https://drive.google.com/file/d/1JAErwv7jA-3meEaDucnjCWL2fs_Ck0mO/view?usp=sharing" },
+  { nombre: "Jefry Antonio Palma Guevara", rol: "Wicom - Costa Rica - Peon de Obra", ubicacion: "Peñas Blancas, Guanacaste, Costa Rica", lat: 11.2167, lng: -85.6167, distancia: 119.0, honorario: 400000, cv: "https://drive.google.com/file/d/1rxBZzXmFV15FpCfMA9aLc0cBQ15lF26-/view?usp=sharing" },
+  { nombre: "Cesar Solano", rol: "Wicom - Costa Rica - Peon de Obra", ubicacion: "Liberia, Guanacaste, Costa Rica", lat: 10.6300, lng: -85.4400, distancia: 44.0, honorario: 400000, cv: "https://drive.google.com/file/d/1WVPrTDtsMmHO8hakTVzHlnrx-YnYbMHS/view?usp=sharing" }
 ];
 
-const colors = ["#5b8def","#61c78f","#f2b84b","#ef6461","#b98be0","#4fd1c5","#f2789f","#f6a623","#7cd992","#8ea6ff","#e0c341","#ff8a5c","#74c8e8","#c792ea","#82e0aa","#f1948a","#85c1e9","#f8c471"];
+const colors = ["#5b8def","#61c78f","#f2b84b","#ef6461","#b98be0","#4fd1c5","#f2789f","#f6a623","#7cd992","#8ea6ff","#e0c341","#ff8a5c","#74c8e8","#c792ea","#82e0aa","#f1948a","#85c1e9","#f8c471","#a3e4d7","#f5b7b1","#aed6f1"];
 data.forEach((d, i) => { d.color = colors[i % colors.length]; });
 const fmtCRC = n => "₡" + Math.round(n).toLocaleString("es-CR");
 
