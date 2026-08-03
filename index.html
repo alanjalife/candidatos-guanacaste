@@ -105,6 +105,11 @@
     color:#8fb4f7;
   }
   canvas{max-width:100%;}
+  .chart-wrap{
+    position:relative;
+    height:600px;
+    width:100%;
+  }
   .foot{
     max-width:1180px;
     margin:24px auto 0;
@@ -171,12 +176,12 @@
 
   <div class="card">
     <h2>Distancia a Guanacaste (km)</h2>
-    <canvas id="distChart" height="560"></canvas>
+    <div class="chart-wrap"><canvas id="distChart"></canvas></div>
   </div>
 
   <div class="card">
     <h2>Honorarios pretendidos (CRC)</h2>
-    <canvas id="feeChart" height="560"></canvas>
+    <div class="chart-wrap"><canvas id="feeChart"></canvas></div>
   </div>
 
   <div class="card full">
@@ -380,6 +385,8 @@ new Chart(document.getElementById("distChart"), {
   },
   options: {
     indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
     plugins: { legend: { display: false } },
     scales: {
       x: { ticks: { color: "#9aa5b8" }, grid: { color: "#2a3348" }, title: { display: true, text: "km", color: "#9aa5b8" } },
@@ -401,6 +408,8 @@ new Chart(document.getElementById("feeChart"), {
   },
   options: {
     indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
     plugins: { legend: { display: false } },
     scales: {
       x: { ticks: { color: "#9aa5b8", callback: v => "₡" + (v/1000) + "k" }, grid: { color: "#2a3348" } },
