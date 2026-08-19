@@ -244,6 +244,7 @@ const data = [
   { nombre: "Gilberth Jiménez Prendas", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "San José, Costa Rica", lat: 9.9320, lng: -84.0850, distancia: 167.0, honorario: 1000000, cv: "https://drive.google.com/file/d/1EJHaTAjGqZV5AZBT3gbH4aAEtovxR5W9/view?usp=drive_link" },
   { nombre: "Fernando Luis Fuentes Navarro", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "Heredia, Costa Rica", lat: 10.0024, lng: -84.1165, distancia: 249.0, honorario: 1300000, cv: "https://drive.google.com/file/d/1w65O4nTI3Scjj5Xk8Zbu43L_R-d-8weB/view?usp=drive_link" },
   { nombre: "Ricardo Alvarado Guevara", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "Bagaces, Guanacaste, Costa Rica", lat: 10.5106, lng: -85.2394, distancia: 69.0, honorario: 850000, cv: "https://drive.google.com/file/d/1f6wh6Va95tBHVtpUC3deddkRM4Akae5X/view?usp=drive_link" },
+  { nombre: "Esteban Mesen Centeno", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "Cartago, Costa Rica", lat: 9.8630, lng: -83.9170, distancia: 270.0, honorario: 1100000, cv: "https://drive.google.com/file/d/13ugINPYaUZQEDnmnRSUmFWVQp_7Aju1I/view?usp=drive_link" },
   { nombre: "Gustavo Alonso Umaña Zúñiga", rol: "Wicom - Costa Rica - Albañil", ubicacion: "Cartago, Costa Rica", lat: 9.8600, lng: -83.9250, distancia: 228.0, honorario: 650000, cv: "https://drive.google.com/file/d/1NY7qEZ6ex1ujoxQKlv99TrHvl_XP-aKK/view?usp=sharing" },
   { nombre: "Francisco Gomez Calderon", rol: "Wicom - Costa Rica - Albañil", ubicacion: "Santa Cruz, Guanacaste, Costa Rica", lat: 10.2605, lng: -85.5851, distancia: 48.0, honorario: 650000, cv: "https://drive.google.com/file/d/1f6nG5_3d_2It2dhDnIb43Ed-JC9V3nju/view?usp=drive_link" },
   { nombre: "Jordy Antonio Gonzalez Martinez", rol: "Wicom - Costa Rica - Peon de Obra", ubicacion: "Sardinal de Carrillo, Guanacaste, Costa Rica", lat: 10.5174, lng: -85.6475, distancia: 36.0, honorario: 400000, cv: "https://drive.google.com/file/d/1JAErwv7jA-3meEaDucnjCWL2fs_Ck0mO/view?usp=sharing" },
@@ -253,7 +254,7 @@ const data = [
   { nombre: "Luis Alonso Jimenez", rol: "Wicom - Costa Rica - Jefe de obra", ubicacion: "Santa Cruz, Guanacaste, Costa Rica", lat: 10.2605, lng: -85.5851, distancia: 48.0, honorario: 1253135, cv: "https://drive.google.com/file/d/1TsOqKhuNc__HhK8eugMmL4ro4tEz8arY/view?usp=sharing" }
 ];
 
-const colors = ["#5b8def","#61c78f","#f2b84b","#ef6461","#b98be0","#4fd1c5","#f2789f","#f6a623","#7cd992","#8ea6ff","#e0c341","#ff8a5c","#74c8e8","#c792ea","#82e0aa","#f1948a","#85c1e9","#f8c471","#a3e4d7","#f5b7b1","#aed6f1","#d7bde2","#a9dfbf","#f9e79f","#fadbd8","#c9e4ca"];
+const colors = ["#5b8def","#61c78f","#f2b84b","#ef6461","#b98be0","#4fd1c5","#f2789f","#f6a623","#7cd992","#8ea6ff","#e0c341","#ff8a5c","#74c8e8","#c792ea","#82e0aa","#f1948a","#85c1e9","#f8c471","#a3e4d7","#f5b7b1","#aed6f1","#d7bde2","#a9dfbf","#f9e79f","#fadbd8","#c9e4ca","#f4d9b0"];
 data.forEach((d, i) => { d.color = colors[i % colors.length]; });
 const fmtCRC = n => "₡" + Math.round(n).toLocaleString("es-CR");
 
