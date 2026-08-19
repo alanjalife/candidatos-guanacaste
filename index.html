@@ -249,18 +249,20 @@ const data = [
   { nombre: "Jordy Antonio Gonzalez Martinez", rol: "Wicom - Costa Rica - Peon de Obra", ubicacion: "Sardinal de Carrillo, Guanacaste, Costa Rica", lat: 10.5174, lng: -85.6475, distancia: 36.0, honorario: 400000, cv: "https://drive.google.com/file/d/1JAErwv7jA-3meEaDucnjCWL2fs_Ck0mO/view?usp=sharing" },
   { nombre: "Jefry Antonio Palma Guevara", rol: "Wicom - Costa Rica - Peon de Obra", ubicacion: "Peñas Blancas, Guanacaste, Costa Rica", lat: 11.2167, lng: -85.6167, distancia: 119.0, honorario: 400000, cv: "https://drive.google.com/file/d/1rxBZzXmFV15FpCfMA9aLc0cBQ15lF26-/view?usp=sharing" },
   { nombre: "Cesar Solano", rol: "Wicom - Costa Rica - Peon de Obra", ubicacion: "Liberia, Guanacaste, Costa Rica", lat: 10.6300, lng: -85.4400, distancia: 44.0, honorario: 400000, cv: "https://drive.google.com/file/d/1WVPrTDtsMmHO8hakTVzHlnrx-YnYbMHS/view?usp=sharing" },
-  { nombre: "Timersson Starlyn Cerdas Villalobos", rol: "Wicom - Costa Rica - Peon de Obra", ubicacion: "Bagaces, Guanacaste, Costa Rica", lat: 10.5050, lng: -85.2350, distancia: 69.0, honorario: 400000, cv: "https://drive.google.com/file/d/1qK8-ai4Jf1SzZ9eCEurOKtsH5Dx09Dn7/view" }
+  { nombre: "Timersson Starlyn Cerdas Villalobos", rol: "Wicom - Costa Rica - Peon de Obra", ubicacion: "Bagaces, Guanacaste, Costa Rica", lat: 10.5050, lng: -85.2350, distancia: 69.0, honorario: 400000, cv: "https://drive.google.com/file/d/1qK8-ai4Jf1SzZ9eCEurOKtsH5Dx09Dn7/view" },
+  { nombre: "Luis Alonso Jimenez", rol: "Wicom - Costa Rica - Jefe de obra", ubicacion: "Santa Cruz, Guanacaste, Costa Rica", lat: 10.2605, lng: -85.5851, distancia: 48.0, honorario: 1253135, cv: "https://drive.google.com/file/d/1TsOqKhuNc__HhK8eugMmL4ro4tEz8arY/view?usp=sharing" }
 ];
 
-const colors = ["#5b8def","#61c78f","#f2b84b","#ef6461","#b98be0","#4fd1c5","#f2789f","#f6a623","#7cd992","#8ea6ff","#e0c341","#ff8a5c","#74c8e8","#c792ea","#82e0aa","#f1948a","#85c1e9","#f8c471","#a3e4d7","#f5b7b1","#aed6f1","#d7bde2","#a9dfbf","#f9e79f","#fadbd8"];
+const colors = ["#5b8def","#61c78f","#f2b84b","#ef6461","#b98be0","#4fd1c5","#f2789f","#f6a623","#7cd992","#8ea6ff","#e0c341","#ff8a5c","#74c8e8","#c792ea","#82e0aa","#f1948a","#85c1e9","#f8c471","#a3e4d7","#f5b7b1","#aed6f1","#d7bde2","#a9dfbf","#f9e79f","#fadbd8","#c9e4ca"];
 data.forEach((d, i) => { d.color = colors[i % colors.length]; });
 const fmtCRC = n => "₡" + Math.round(n).toLocaleString("es-CR");
 
 function tierClass(rol){
-  if (rol.includes("1 / 2")) return "tier1";
-  if (rol.includes("3 / 4")) return "tier2";
-  if (rol.includes("Jefe de Obra")) return "tier3";
-  if (rol.includes("Albañil")) return "tier4";
+  const r = rol.toLowerCase();
+  if (r.includes("1 / 2")) return "tier1";
+  if (r.includes("3 / 4")) return "tier2";
+  if (r.includes("jefe de obra")) return "tier3";
+  if (r.includes("albañil")) return "tier4";
   return "tier5";
 }
 
