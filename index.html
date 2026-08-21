@@ -3,223 +3,160 @@
 <head>
 <meta charset="UTF-8">
 <title>Candidatos para proyecto WICOM en Guanacaste</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <style>
-  :root{
-    --bg:#0f1420;
-    --card:#171e2e;
-    --border:#2a3348;
-    --text:#e8ecf4;
-    --muted:#9aa5b8;
-    --accent1:#5b8def;
-    --accent2:#f2b84b;
-    --accent3:#61c78f;
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 24px;
+    background: #0f1420;
+    color: #e6e9f0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   }
-  *{box-sizing:border-box;}
-  body{
-    margin:0;
-    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;
-    background:linear-gradient(180deg,#0f1420,#12192a);
-    color:var(--text);
-    padding:32px 24px 60px;
+  h1 {
+    font-size: 22px;
+    margin: 0 0 20px 0;
+    color: #f5f7fb;
   }
-  h1{
-    font-size:24px;
-    margin:0 0 4px;
+  .grid {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
   }
-  p.subtitle{
-    color:var(--muted);
-    margin:0 0 28px;
-    font-size:14px;
+  .card {
+    background: #161c2c;
+    border: 1px solid #232c42;
+    border-radius: 12px;
+    padding: 16px;
   }
-  .grid{
-    display:grid;
-    grid-template-columns:1.3fr 1fr;
-    gap:20px;
-    max-width:1180px;
-    margin:0 auto;
+  .card h2 {
+    font-size: 15px;
+    margin: 0 0 12px 0;
+    color: #aab3c8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
-  @media (max-width:900px){
-    .grid{grid-template-columns:1fr;}
+  #map {
+    height: 600px;
+    width: 100%;
+    border-radius: 8px;
   }
-  .card{
-    background:var(--card);
-    border:1px solid var(--border);
-    border-radius:14px;
-    padding:20px 22px;
+  .chart-wrap {
+    position: relative;
+    height: 600px;
+    width: 100%;
   }
-  .card h2{
-    font-size:15px;
-    margin:0 0 16px;
-    color:var(--muted);
-    font-weight:600;
-    text-transform:uppercase;
-    letter-spacing:.04em;
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
   }
-  table{
-    width:100%;
-    border-collapse:collapse;
-    font-size:13.5px;
+  th, td {
+    padding: 8px 10px;
+    text-align: left;
+    border-bottom: 1px solid #232c42;
   }
-  th,td{
-    text-align:left;
-    padding:9px 8px;
-    border-bottom:1px solid var(--border);
+  th {
+    color: #8892a8;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.04em;
   }
-  th{
-    color:var(--muted);
-    font-weight:600;
-    font-size:12px;
-    text-transform:uppercase;
-    letter-spacing:.03em;
+  tr:hover td { background: #1c2439; }
+  .tier1 { color: #59d18a; font-weight: 600; }
+  .tier2 { color: #5aa9e6; font-weight: 600; }
+  .tier3 { color: #e6c65a; font-weight: 600; }
+  .tier4 { color: #e6905a; font-weight: 600; }
+  .tier5 { color: #b0b8cc; font-weight: 600; }
+  .cv-link {
+    color: #6fb1ff;
+    text-decoration: none;
+    font-weight: 500;
   }
-  td.num{
-    text-align:right;
-    font-variant-numeric:tabular-nums;
+  .cv-link:hover { text-decoration: underline; }
+  .summary-table td.num, .summary-table th.num { text-align: center; }
+  .dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 6px;
   }
-  .summary-table td.num,
-  .summary-table th.num{
-    text-align:center;
+  .leaflet-tooltip.dark-tip {
+    background: #161c2c;
+    color: #e6e9f0;
+    border: 1px solid #232c42;
+    font-size: 12px;
   }
-  .tier{
-    display:inline-block;
-    padding:2px 8px;
-    border-radius:999px;
-    font-size:11.5px;
-    font-weight:600;
-    white-space:nowrap;
+  .leaflet-popup-content-wrapper {
+    background: #161c2c;
+    color: #e6e9f0;
+    border-radius: 8px;
   }
-  .tier1{background:rgba(97,199,143,.15); color:var(--accent3);}
-  .tier2{background:rgba(91,141,239,.15); color:var(--accent1);}
-  .tier3{background:rgba(185,139,224,.15); color:#b98be0;}
-  .tier4{background:rgba(246,166,35,.15); color:#f6a623;}
-  .tier5{background:rgba(239,100,97,.15); color:#ef6461;}
-  .cv-link{
-    color:var(--accent1);
-    text-decoration:none;
-    border-bottom:1px dotted var(--accent1);
-  }
-  .cv-link:hover{
-    color:#8fb4f7;
-  }
-  canvas{max-width:100%;}
-  .chart-wrap{
-    position:relative;
-    height:600px;
-    width:100%;
-  }
-  .foot{
-    max-width:1180px;
-    margin:24px auto 0;
-    color:var(--muted);
-    font-size:12px;
-    line-height:1.6;
-  }
-  .full{grid-column:1/-1;}
-  #map{
-    height:600px;
-    width:100%;
-    border-radius:10px;
-    border:1px solid var(--border);
-  }
-  .leaflet-popup-content-wrapper{
-    background:#171e2e;
-    color:#e8ecf4;
-    border-radius:8px;
-  }
-  .leaflet-popup-tip{background:#171e2e;}
-  .leaflet-popup-content b{color:#fff;}
-  .leaflet-popup-content a{color:#8fb4f7;}
-  .dist-tooltip{
-    background:#0f1420;
-    color:#e8ecf4;
-    border:1px solid var(--border);
-    border-radius:6px;
-    padding:3px 8px;
-    font-size:11.5px;
-    font-weight:600;
-    white-space:nowrap;
-    box-shadow:0 2px 6px rgba(0,0,0,.4);
-  }
-  .leaflet-tooltip.dist-tooltip::before{
-    border-top-color:#0f1420;
-  }
-  .center-tooltip{
-    background:#ffffff;
-    color:#0f1420;
-    border:1px solid #ffffff;
-    border-radius:6px;
-    padding:3px 9px;
-    font-size:12px;
-    font-weight:700;
-    white-space:nowrap;
-    box-shadow:0 2px 8px rgba(0,0,0,.5);
-  }
-  .leaflet-tooltip.center-tooltip::before{
-    border-top-color:#ffffff;
+  .leaflet-popup-tip { background: #161c2c; }
+  .leaflet-popup-content a { color: #6fb1ff; }
+  .leaflet-tile-pane { filter: brightness(0.85) contrast(1.05); }
+  @media (max-width: 1000px) {
+    .grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
+  <h1>Candidatos para proyecto WICOM en Guanacaste</h1>
 
-<h1>Candidatos para proyecto WICOM en Guanacaste</h1>
-<p class="subtitle">Distancia, rol al que aplican y honorarios pretendidos &middot; punto de referencia: Liberia, Guanacaste, Costa Rica</p>
+  <div class="grid">
+    <div class="card">
+      <h2>Mapa de candidatos</h2>
+      <div id="map"></div>
+    </div>
+    <div class="card">
+      <h2>Distancia a Guanacaste (km)</h2>
+      <div class="chart-wrap"><canvas id="distChart"></canvas></div>
+    </div>
+  </div>
 
-<div class="grid">
-
-  <div class="card full">
-    <h2>Mapa: Guanacaste y ciudades de los candidatos</h2>
-    <div id="map"></div>
+  <div class="grid">
+    <div class="card">
+      <h2>Honorarios pretendidos (CRC)</h2>
+      <div class="chart-wrap"><canvas id="feeChart"></canvas></div>
+    </div>
+    <div class="card">
+      <h2>Promedio por rol</h2>
+      <table class="summary-table">
+        <thead>
+          <tr>
+            <th>Rol</th>
+            <th class="num">Candidatos</th>
+            <th class="num">Distancia prom. (km)</th>
+            <th class="num">Honorario prom. (CRC)</th>
+          </tr>
+        </thead>
+        <tbody id="summaryBody"></tbody>
+      </table>
+    </div>
   </div>
 
   <div class="card">
-    <h2>Distancia a Guanacaste (km)</h2>
-    <div class="chart-wrap"><canvas id="distChart"></canvas></div>
-  </div>
-
-  <div class="card">
-    <h2>Honorarios pretendidos (CRC)</h2>
-    <div class="chart-wrap"><canvas id="feeChart"></canvas></div>
-  </div>
-
-  <div class="card full">
     <h2>Detalle de candidatos</h2>
     <table>
       <thead>
         <tr>
           <th>Candidato</th>
-          <th>Rol / Tier</th>
+          <th>Rol</th>
           <th>Ubicación</th>
-          <th class="num">Distancia (km)</th>
-          <th class="num">Honorario (CRC)</th>
+          <th>Distancia (km)</th>
+          <th>Honorario (CRC)</th>
+          <th>CV</th>
         </tr>
       </thead>
       <tbody id="tableBody"></tbody>
     </table>
   </div>
-
-  <div class="card full">
-    <h2>Promedio por rol</h2>
-    <table class="summary-table">
-      <thead>
-        <tr>
-          <th>Rol</th>
-          <th class="num">Candidatos</th>
-          <th class="num">Distancia promedio (km)</th>
-          <th class="num">Honorario promedio (CRC)</th>
-        </tr>
-      </thead>
-      <tbody id="summaryBody"></tbody>
-    </table>
-  </div>
-
-</div>
-
-<p class="foot">
-  Distancias en línea recta (fórmula de Haversine) desde cada ubicación hasta Liberia, Guanacaste (cabecera de la provincia); no representan distancia real por carretera. Coordenadas de "Alajuela, Desamparados" son aproximadas por ambigüedad del nombre de la localidad — avisame si corresponden a otro punto. Pase el cursor sobre un punto del mapa para ver ciudad y distancia; haga clic para ver detalles y CV (cuando esté disponible).
-</p>
 
 <script>
 const center = { nombre: "Guanacaste (Liberia)", lat: 10.6335, lng: -85.4380 };
@@ -227,33 +164,37 @@ const center = { nombre: "Guanacaste (Liberia)", lat: 10.6335, lng: -85.4380 };
 const data = [
   { nombre: "Yerlan Daniel Gomez Hernandez", rol: "Wicom - Costa Rica - Tier 1 / 2", ubicacion: "Nicoya, Guanacaste, Costa Rica", lat: 10.1483, lng: -85.4519, distancia: 80.2, honorario: 600000, cv: "https://drive.google.com/file/d/1jO0Xo9-Jx4ZunVBPGpXk0wwScIOh6DNo/view?usp=drive_link" },
   { nombre: "Levy Centeno Castellon", rol: "Wicom - Costa Rica - Tier 1 / 2", ubicacion: "Alajuela, Desamparados, Costa Rica", lat: 10.0159, lng: -84.2116, distancia: 243.0, honorario: 560000, cv: "https://drive.google.com/file/d/1J4OAZVoRyJSdVEZ8UEJBLj3i_v1vODAY/view?usp=drive_link" },
-  { nombre: "Johan Aguilar Brenes", rol: "Wicom - Costa Rica - Tier 1 / 2", ubicacion: "Alajuela, Desamparados, Costa Rica", lat: 10.0130, lng: -84.2080, distancia: 243.0, honorario: 560000, cv: "https://drive.google.com/file/d/19RU9e-vgRqGi1W-wHjDpefy4-xuBcjtC/view?usp=drive_link" },
-  { nombre: "Johel Jose González Siles", rol: "Wicom - Costa Rica - Tier 1 / 2", ubicacion: "Mogote, Guanacaste, Costa Rica", lat: 10.7031, lng: -85.2731, distancia: 90.0, honorario: 650000, cv: "https://drive.google.com/file/d/1BRogOUrNhUG-i_woJxZFBdCq-CQssiMF/view?usp=drive_link" },
+  { nombre: "Johan Aguilar Brenes", rol: "Wicom - Costa Rica - Tier 1 / 2", ubicacion: "Alajuela, Desamparados, Costa Rica", lat: 10.0159, lng: -84.2116, distancia: 243.0, honorario: 560000, cv: "https://drive.google.com/file/d/19RU9e-vgRqGi1W-wHjDpefy4-xuBcjtC/view?usp=drive_link" },
+  { nombre: "Johel Jose González Siles", rol: "Wicom - Costa Rica - Tier 1 / 2", ubicacion: "Mogote, Guanacaste, Costa Rica", lat: 10.5000, lng: -85.3167, distancia: 90.0, honorario: 650000, cv: "https://drive.google.com/file/d/1BRogOUrNhUG-i_woJxZFBdCq-CQssiMF/view?usp=drive_link" },
   { nombre: "Moisés Rojas Rodríguez", rol: "Wicom - Costa Rica - Tier 1 / 2", ubicacion: "Tilarán, Guanacaste, Costa Rica", lat: 10.4670, lng: -84.9678, distancia: 110.0, honorario: 550000, cv: "https://drive.google.com/file/d/1YWlT5DoxyBFfiBNZRkd3Hh74rUtn09f9/view?usp=drive_link" },
-  { nombre: "Samuel Rodriguez Vega", rol: "Wicom - Costa Rica - Tier 1 / 2", ubicacion: "Cartago, Costa Rica", lat: 9.8650, lng: -83.9210, distancia: 270.0, honorario: 600000, cv: "https://drive.google.com/file/d/1gtr7CtLtyIirQ4ZyZT17ujXcROyHdfYe/view?usp=drive_link" },
+  { nombre: "Samuel Rodriguez Vega", rol: "Wicom - Costa Rica - Tier 1 / 2", ubicacion: "Cartago, Costa Rica", lat: 9.8630, lng: -83.9170, distancia: 270.0, honorario: 600000, cv: "https://drive.google.com/file/d/1gtr7CtLtyIirQ4ZyZT17ujXcROyHdfYe/view?usp=drive_link" },
   { nombre: "Christopher José Barahona Salas", rol: "Wicom - Costa Rica - Tier 1 / 2", ubicacion: "Bagaces, Guanacaste, Costa Rica", lat: 10.5106, lng: -85.2394, distancia: 68.6, honorario: 720000, cv: "https://drive.google.com/file/d/1dByoyWgl8ThWDY3_Iqc3nvsg7xGlG-q6/view?usp=drive_link" },
-  { nombre: "Fabricio Mora Quirós", rol: "Wicom - Costa Rica - Tier 1 / 2", ubicacion: "Bagaces, Guanacaste, Costa Rica", lat: 10.5060, lng: -85.2430, distancia: 68.6, honorario: 650000, cv: "https://drive.google.com/file/d/1dnzIYwV5l5-RsvZV-zDz0Xp1hy_0-vxp/view?usp=drive_link" },
-  { nombre: "John Levy Campos", rol: "Wicom - Costa Rica - Tier 1 / 2", ubicacion: "Diria, Guanacaste, Costa Rica", lat: 10.2394, lng: -85.4275, distancia: 66.9, honorario: 1200000, cv: "https://drive.google.com/file/d/1isN2pEaqHuIEjJ-GZEwT0sLnWBZnL-t3/view?usp=drive_link" },
   { nombre: "Jose Pablo Morales Lopez", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "San José, Costa Rica", lat: 9.9281, lng: -84.0907, distancia: 167.0, honorario: 900000, cv: "https://drive.google.com/file/d/1XHfzPm167nbfYuRppyXTH2s4GszOGY6L/view?usp=drive_link" },
-  { nombre: "Brandon Chavarría López", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "Siquirres, Costa Rica", lat: 10.0981, lng: -83.5097, distancia: 219.2, honorario: 1100000, cv: "https://drive.google.com/file/d/1vdZnGXkJwMGVchjTaCSRRhAbzxM1wtoJ/view?usp=sharing" },
-  { nombre: "Randall Alberto Murillo Zamora", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "Cartago, Costa Rica", lat: 9.8644, lng: -83.9194, distancia: 270.0, honorario: 750000, cv: "https://drive.google.com/file/d/1SdwM_UpUsJEKUM5DW5Ux1R0PUbBjMxfy/view?usp=drive_link" },
+  { nombre: "Brandon Chavarría López", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "Siquirres, Costa Rica", lat: 10.0950, lng: -83.5150, distancia: 219.2, honorario: 1100000, cv: "https://drive.google.com/file/d/1vdZnGXkJwMGVchjTaCSRRhAbzxM1wtoJ/view?usp=drive_link" },
+  { nombre: "Randall Alberto Murillo Zamora", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "Cartago, Costa Rica", lat: 9.8630, lng: -83.9170, distancia: 270.0, honorario: 750000, cv: "https://drive.google.com/file/d/1SdwM_UpUsJEKUM5DW5Ux1R0PUbBjMxfy/view?usp=drive_link" },
   { nombre: "Lester Sanchez Flores", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "Alajuela, Costa Rica", lat: 10.0159, lng: -84.2116, distancia: 243.0, honorario: 1200000, cv: "https://drive.google.com/file/d/1h4kIimUqcLUi9Ji4clnMWGRGFhD-FbN7/view?usp=drive_link" },
-  { nombre: "Jose Corrales Mora", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "Curridabat, Costa Rica", lat: 9.9159, lng: -84.0333, distancia: 259.0, honorario: 900000, cv: "https://drive.google.com/file/d/1l1hsP74XLUnvAoBqZ7MSuNFHYHBu-z8h/view?usp=drive_link" },
-  { nombre: "Geiner Picado Cerdas", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "Cartago, Costa Rica", lat: 9.8610, lng: -83.9230, distancia: 270.0, honorario: 650000, cv: "https://drive.google.com/file/d/1RFcRY9Y0Ts_X08dLY0XIYykgppoTcyGA/view?usp=drive_link" },
-  { nombre: "Jorge Rolando Barquero Gutierrez", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "Cartago, Costa Rica", lat: 9.8680, lng: -83.9150, distancia: 270.0, honorario: 950000, cv: "https://drive.google.com/file/d/1WN0IMdaDow2LTDzBQaMI-88Rrigygg9E/view?usp=drive_link" },
-  { nombre: "Gilberth Jiménez Prendas", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "San José, Costa Rica", lat: 9.9320, lng: -84.0850, distancia: 167.0, honorario: 1000000, cv: "https://drive.google.com/file/d/1EJHaTAjGqZV5AZBT3gbH4aAEtovxR5W9/view?usp=drive_link" },
+  { nombre: "Jose Corrales Mora", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "Curridabat, Costa Rica", lat: 9.9167, lng: -84.0333, distancia: 259.0, honorario: 900000, cv: "https://drive.google.com/file/d/1l1hsP74XLUnvAoBqZ7MSuNFHYHBu-z8h/view?usp=drive_link" },
+  { nombre: "Geiner Picado Cerdas", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "Cartago, Costa Rica", lat: 9.8630, lng: -83.9170, distancia: 270.0, honorario: 650000, cv: "https://drive.google.com/file/d/1RFcRY9Y0Ts_X08dLY0XIYykgppoTcyGA/view?usp=drive_link" },
+  { nombre: "Jorge Rolando Barquero Gutierrez", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "Cartago, Costa Rica", lat: 9.8630, lng: -83.9170, distancia: 270.0, honorario: 950000, cv: "https://drive.google.com/file/d/1WN0IMdaDow2LTDzBQaMI-88Rrigygg9E/view?usp=drive_link" },
+  { nombre: "Gilberth Jiménez Prendas", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "San José, Costa Rica", lat: 9.9281, lng: -84.0907, distancia: 167.0, honorario: 1000000, cv: "https://drive.google.com/file/d/1EJHaTAjGqZV5AZBT3gbH4aAEtovxR5W9/view?usp=drive_link" },
   { nombre: "Esteban Mesen Centeno", rol: "Wicom - Costa Rica - Tier 3 / 4", ubicacion: "Cartago, Costa Rica", lat: 9.8630, lng: -83.9170, distancia: 270.0, honorario: 1100000, cv: "https://drive.google.com/file/d/13ugINPYaUZQEDnmnRSUmFWVQp_7Aju1I/view?usp=drive_link" },
   { nombre: "Francisco Gomez Calderon", rol: "Wicom - Costa Rica - Albañil", ubicacion: "Santa Cruz, Guanacaste, Costa Rica", lat: 10.2605, lng: -85.5851, distancia: 48.0, honorario: 650000, cv: "https://drive.google.com/file/d/1f6nG5_3d_2It2dhDnIb43Ed-JC9V3nju/view?usp=drive_link" },
-  { nombre: "Jordy Antonio Gonzalez Martinez", rol: "Wicom - Costa Rica - Peon de Obra", ubicacion: "Sardinal de Carrillo, Guanacaste, Costa Rica", lat: 10.5174, lng: -85.6475, distancia: 36.0, honorario: 400000, cv: "https://drive.google.com/file/d/1JAErwv7jA-3meEaDucnjCWL2fs_Ck0mO/view?usp=sharing" },
+  { nombre: "Jordy Antonio Gonzalez Martinez", rol: "Wicom - Costa Rica - Peon de Obra", ubicacion: "Sardinal de Carrillo, Guanacaste, Costa Rica", lat: 10.5174, lng: -85.6475, distancia: 36.0, honorario: 400000, cv: "https://drive.google.com/file/d/1JAErwv7jA-3meEaDucnjCWL2fs_Ck0mO/view?usp=drive_link" },
   { nombre: "Luis Alonso Jimenez", rol: "Wicom - Costa Rica - Jefe de obra", ubicacion: "Santa Cruz, Guanacaste, Costa Rica", lat: 10.2605, lng: -85.5851, distancia: 48.0, honorario: 1253135, cv: "https://drive.google.com/file/d/1TsOqKhuNc__HhK8eugMmL4ro4tEz8arY/view?usp=sharing" },
-  { nombre: "Juan Diego Ospina Ardila", rol: "Wicom - Costa Rica - Jefe de obra", ubicacion: "Tilarán, Costa Rica", lat: 10.4700, lng: -84.9720, distancia: 134.0, honorario: 1800000, cv: "https://drive.google.com/file/d/1v1vfRYRkJxGJLYtkpE5WucfjBMCHtkyC/view?usp=sharing" }
+  { nombre: "Juan Diego Ospina Ardila", rol: "Wicom - Costa Rica - Jefe de obra", ubicacion: "Tilarán, Costa Rica", lat: 10.4700, lng: -84.9720, distancia: 134.0, honorario: 1800000, cv: "https://drive.google.com/file/d/1v1vfRYRkJxGJLYtkpE5WucfjBMCHtkyC/view?usp=sharing" },
+  { nombre: "Marvin Antonio Roque Álvarez", rol: "Wicom - Costa Rica - Jefe de obra", ubicacion: "Guanacaste, Costa Rica", lat: 10.2605, lng: -85.5851, distancia: 48.0, honorario: 1900000, cv: "https://drive.google.com/file/d/1Ihz9fwzIi8p8UmB-gTNsjL2yEyCSJIye/view?usp=sharing" }
 ];
 
-const colors = ["#5b8def","#61c78f","#f2b84b","#ef6461","#b98be0","#4fd1c5","#f2789f","#f6a623","#7cd992","#8ea6ff","#e0c341","#ff8a5c","#74c8e8","#c792ea","#82e0aa","#f1948a","#85c1e9","#f8c471","#a3e4d7","#f5b7b1","#aed6f1","#d7bde2"];
+const colors = [
+  "#59d18a", "#5aa9e6", "#e6c65a", "#e6905a", "#b0b8cc",
+  "#c77dff", "#4cc9f0", "#f72585", "#7bdff2", "#ffb703",
+  "#8ecae6", "#fb8500", "#219ebc", "#ef476f", "#06d6a0",
+  "#118ab2", "#ffd166", "#073b4c", "#adb5bd", "#e63946",
+  "#2a9d8f"
+];
 data.forEach((d, i) => { d.color = colors[i % colors.length]; });
-const fmtCRC = n => "₡" + Math.round(n).toLocaleString("es-CR");
 
-function tierClass(rol){
+function tierClass(rol) {
   const r = rol.toLowerCase();
   if (r.includes("1 / 2")) return "tier1";
   if (r.includes("3 / 4")) return "tier2";
@@ -262,123 +203,99 @@ function tierClass(rol){
   return "tier5";
 }
 
-function roleLabel(rol){
+function roleLabel(rol) {
   return rol.replace("Wicom - Costa Rica - ", "");
 }
 
-function nombreCell(d){
-  return d.cv
-    ? `<a class="cv-link" href="${d.cv}" target="_blank" rel="noopener">${d.nombre}</a>`
-    : d.nombre;
+function nombreCell(d) {
+  return `<a class="cv-link" href="${d.cv}" target="_blank" rel="noopener">${d.nombre}</a>`;
 }
 
-// Tabla detalle
-const tbody = document.getElementById("tableBody");
-data.forEach((d) => {
-  tbody.innerHTML += `
-    <tr>
-      <td>${nombreCell(d)}</td>
-      <td><span class="tier ${tierClass(d.rol)}">${d.rol}</span></td>
-      <td>${d.ubicacion}</td>
-      <td class="num">${d.distancia.toLocaleString("es-CR")}</td>
-      <td class="num">${fmtCRC(d.honorario)}</td>
-    </tr>`;
+function fmtCRC(n) {
+  return "₡" + n.toLocaleString("es-CR");
+}
+
+// ---- Detail table ----
+const tableBody = document.getElementById("tableBody");
+data.forEach(d => {
+  const tr = document.createElement("tr");
+  tr.innerHTML = `
+    <td>${nombreCell(d)}</td>
+    <td class="${tierClass(d.rol)}">${roleLabel(d.rol)}</td>
+    <td>${d.ubicacion}</td>
+    <td>${d.distancia.toFixed(1)}</td>
+    <td>${fmtCRC(d.honorario)}</td>
+    <td><a class="cv-link" href="${d.cv}" target="_blank" rel="noopener">Ver CV</a></td>
+  `;
+  tableBody.appendChild(tr);
 });
 
-// Tabla de promedios por rol
-const groups = {};
-data.forEach((d) => {
+// ---- Summary table (avg by role) ----
+const rolesMap = {};
+data.forEach(d => {
   const key = roleLabel(d.rol);
-  if (!groups[key]) groups[key] = { rol: d.rol, distSum: 0, feeSum: 0, count: 0 };
-  groups[key].distSum += d.distancia;
-  groups[key].feeSum += d.honorario;
-  groups[key].count += 1;
+  if (!rolesMap[key]) rolesMap[key] = { count: 0, distSum: 0, honSum: 0 };
+  rolesMap[key].count++;
+  rolesMap[key].distSum += d.distancia;
+  rolesMap[key].honSum += d.honorario;
 });
-
 const summaryBody = document.getElementById("summaryBody");
-Object.keys(groups).forEach((key) => {
-  const g = groups[key];
-  const avgDist = g.distSum / g.count;
-  const avgFee = g.feeSum / g.count;
-  summaryBody.innerHTML += `
-    <tr>
-      <td><span class="tier ${tierClass(g.rol)}">${key}</span></td>
-      <td class="num">${g.count}</td>
-      <td class="num">${avgDist.toLocaleString("es-CR", { maximumFractionDigits: 1 })}</td>
-      <td class="num">${fmtCRC(avgFee)}</td>
-    </tr>`;
+Object.keys(rolesMap).forEach(role => {
+  const r = rolesMap[role];
+  const tr = document.createElement("tr");
+  tr.innerHTML = `
+    <td class="${tierClass('Wicom - Costa Rica - ' + role)}">${role}</td>
+    <td class="num">${r.count}</td>
+    <td class="num">${(r.distSum / r.count).toFixed(1)}</td>
+    <td class="num">${fmtCRC(Math.round(r.honSum / r.count))}</td>
+  `;
+  summaryBody.appendChild(tr);
 });
 
-// --- Mapa ---
-const map = L.map('map', { scrollWheelZoom: false }).setView([center.lat, center.lng], 7);
-
-const baseLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-  attribution: '&copy; OpenStreetMap &copy; CARTO',
-  subdomains: 'abcd',
-  maxZoom: 19
+// ---- Map ----
+const map = L.map('map', { scrollWheelZoom: false }).setView([center.lat, center.lng], 8);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; OpenStreetMap contributors',
+  maxZoom: 18
 }).addTo(map);
-baseLayer.getContainer() && (baseLayer.getContainer().style.filter = 'brightness(1.35) contrast(0.9)');
 
-// Marcador central: Guanacaste (punto blanco, siempre visible con etiqueta)
-const centerMarker = L.circleMarker([center.lat, center.lng], {
+L.circleMarker([center.lat, center.lng], {
   radius: 9,
-  color: '#0f1420',
+  color: "#ffffff",
   weight: 2,
-  fillColor: '#ffffff',
+  fillColor: "#ff4d4d",
   fillOpacity: 1
-}).addTo(map);
+}).addTo(map).bindTooltip(center.nombre, { permanent: false, className: "dark-tip" });
 
-centerMarker.bindTooltip('Guanacaste', {
-  permanent: true,
-  direction: 'top',
-  offset: [0, -8],
-  className: 'center-tooltip'
-});
-
-centerMarker.bindPopup(`<b>${center.nombre}</b><br>Punto de referencia`);
-
-const bounds = [[center.lat, center.lng]];
-
-data.forEach((d, i) => {
-  bounds.push([d.lat, d.lng]);
-  const col = d.color;
-  const ciudad = d.ubicacion.split(",")[0].trim();
-
+data.forEach(d => {
   const marker = L.circleMarker([d.lat, d.lng], {
-    radius: 5,
-    color: col,
-    weight: 2,
-    fillColor: col,
+    radius: 7,
+    color: "#ffffff",
+    weight: 1.5,
+    fillColor: d.color,
     fillOpacity: 0.9
   }).addTo(map);
-
-  // Ciudad + distancia al pasar el cursor sobre el punto
-  marker.bindTooltip(`${ciudad} &middot; ${d.distancia} km`, {
-    direction: 'top',
-    offset: [0, -6],
-    className: 'dist-tooltip'
-  });
-
-  const cvLine = d.cv ? `<br><a href="${d.cv}" target="_blank" rel="noopener">Ver CV</a>` : '';
-  marker.bindPopup(`<b>${d.nombre}</b><br>${d.rol}<br>${d.ubicacion}<br>${d.distancia} km &middot; ${fmtCRC(d.honorario)}${cvLine}`);
+  marker.bindTooltip(`${d.nombre} — ${d.distancia.toFixed(1)} km`, { className: "dark-tip" });
+  marker.bindPopup(`
+    <strong>${d.nombre}</strong><br>
+    ${roleLabel(d.rol)}<br>
+    ${d.ubicacion}<br>
+    ${d.distancia.toFixed(1)} km · ${fmtCRC(d.honorario)}<br>
+    <a href="${d.cv}" target="_blank" rel="noopener">Ver CV</a>
+  `);
 });
 
-map.fitBounds(bounds, { padding: [40, 40] });
-
+// ---- Charts ----
 const distSorted = [...data].sort((a, b) => a.distancia - b.distancia);
 const feeSorted = [...data].sort((a, b) => a.honorario - b.honorario);
-const distLabels = distSorted.map(d => d.nombre.split(" ").slice(0,2).join(" "));
-const feeLabels = feeSorted.map(d => d.nombre.split(" ").slice(0,2).join(" "));
 
-new Chart(document.getElementById("distChart"), {
-  type: "bar",
+new Chart(document.getElementById('distChart'), {
+  type: 'bar',
   data: {
-    labels: distLabels,
+    labels: distSorted.map(d => d.nombre),
     datasets: [{
-      label: "Distancia (km)",
       data: distSorted.map(d => d.distancia),
-      backgroundColor: distSorted.map(d => d.color),
-      borderRadius: 5
+      backgroundColor: distSorted.map(d => d.color)
     }]
   },
   options: {
@@ -393,15 +310,13 @@ new Chart(document.getElementById("distChart"), {
   }
 });
 
-new Chart(document.getElementById("feeChart"), {
-  type: "bar",
+new Chart(document.getElementById('feeChart'), {
+  type: 'bar',
   data: {
-    labels: feeLabels,
+    labels: feeSorted.map(d => d.nombre),
     datasets: [{
-      label: "Honorario (CRC)",
       data: feeSorted.map(d => d.honorario),
-      backgroundColor: feeSorted.map(d => d.color),
-      borderRadius: 5
+      backgroundColor: feeSorted.map(d => d.color)
     }]
   },
   options: {
@@ -410,12 +325,17 @@ new Chart(document.getElementById("feeChart"), {
     maintainAspectRatio: false,
     plugins: { legend: { display: false } },
     scales: {
-      x: { ticks: { color: "#9aa5b8", callback: v => "₡" + (v/1000) + "k" }, grid: { color: "#2a3348" } },
+      x: {
+        ticks: {
+          color: "#9aa5b8",
+          callback: (v) => "₡" + (v / 1000000).toFixed(1) + "M"
+        },
+        grid: { color: "#2a3348" }
+      },
       y: { ticks: { color: "#9aa5b8", font: { size: 9.5 } }, grid: { display: false } }
     }
   }
 });
 </script>
-
 </body>
 </html>
